@@ -3,6 +3,7 @@ import random
 import os
 from flask import Flask, request
 from pymessenger.bot import Bot
+from weather import Weather, Unit
 
 app = Flask(__name__)
 ACCESS_TOKEN = os.environ['ACCESS_TOKEN']
@@ -32,6 +33,9 @@ def receive_message():
                         response_sent_text = ""
                         if msg.lower() == 'hi':
                             response_sent_text = "Yo!"
+                        elif msg.lower() == "weather":
+                            # TODO expand the get_weather function to get the location of the writer
+                            response_sent_text = get_weather()
                         else:
                             response_sent_text = get_message()
                         send_message(recipient_id, response_sent_text)
@@ -64,6 +68,14 @@ def send_message(recipient_id, response):
     # sends user the text message provided via input response parameter
     bot.send_text_message(recipient_id, response)
     return "success"
+
+
+def get_weather():
+    # get the waether data using weather-api
+    weather = Weather(unit=Unit.CELSIUS)
+    location = weather.lookup_by_location('dublin')
+    condition = location.condition
+    return condition.text
 
 
 if __name__ == "__main__":
