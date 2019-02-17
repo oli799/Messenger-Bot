@@ -33,6 +33,9 @@ def receive_message():
                         response_sent_text = ""
                         if msg.lower() == 'hi':
                             response_sent_text = "Yo!"
+                        elif msg.lower() == "weather":
+                            # TODO expand the get_weather function to get the location of the writer
+                            response_sent_text = get_weather()
                         else:
                             response_sent_text = get_message()
                         send_message(recipient_id, response_sent_text)
