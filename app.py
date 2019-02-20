@@ -1,9 +1,10 @@
 # Python libraries that we need to import for our bot
 import random
 import os
+import pyowm
+import geocoder
 from flask import Flask, request
 from pymessenger.bot import Bot
-from weather import Weather, Unit
 
 app = Flask(__name__)
 ACCESS_TOKEN = os.environ['ACCESS_TOKEN']
@@ -56,8 +57,8 @@ def verify_fb_token(token_sent):
 
 # chooses a random message to send to the user
 def get_message():
-    sample_responses = ["Szia eletke szeretlek!", "Köszi, hogy holnap is atjössz :)",
-                        "<3"]
+    sample_responses = ["Hey!", "Hello!",
+                        "How are you?"]
     # return selected item to the user
     return random.choice(sample_responses)
 
@@ -72,10 +73,18 @@ def send_message(recipient_id, response):
 
 def get_weather():
     # get the waether data using weather-api
-    weather = Weather(unit=Unit.CELSIUS)
-    location = weather.lookup_by_location('dublin')
-    condition = location.condition
-    return condition.text
+    g = geocoder.ip('me')
+    lat = g.latlng[0]
+    lng = g.latlng[1]
+
+    owm = pyowm.OWM('1a4b6b94818486e559a01ec1fb90bfba')
+    observation = owm.weather_at_coords(lat,lng)
+    w = observation.get_weather()
+    temp = w.get_temerature('celsius')
+
+    weather = "The temperature in you location (" + g.city + ") is :" + str(temp['temp'] + "Celsius")
+
+    return weather
 
 
 if __name__ == "__main__":
