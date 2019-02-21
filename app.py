@@ -3,6 +3,7 @@ import random
 import os
 import pyowm
 import geocoder
+import wikiquotes
 from flask import Flask, request
 from pymessenger.bot import Bot
 
@@ -42,7 +43,9 @@ def receive_message():
                         elif msg.lower() == "weather":
                             response_sent_text = get_weather()
                         elif msg.lower() == "help" or msg.lower() == "menu":
-                            response_sent_text = commands;    
+                            response_sent_text = commands
+                        elif msg.lower() == "quote":
+                            response_sent_text = get_quote()
                         else:
                             response_sent_text = get_message()
                         send_message(recipient_id, response_sent_text)
@@ -92,6 +95,10 @@ def get_weather():
                str(g.city) + ") is : " + str(temp['temp']) + " °C")
 
     return weather
+
+def get_quote():
+    quote = wikiquotes.random_quote("Aristotle", "english")
+    return quote
 
 
 if __name__ == "__main__":
