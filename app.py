@@ -6,6 +6,11 @@ import geocoder
 from flask import Flask, request
 from pymessenger.bot import Bot
 
+#Variables
+commands = "You can use the following commands in this bot:\n\n1. Hi - The bot greet you \n2. Weather - the bot displays the current weather\n3. help/menu - The bot displays the commands"
+
+#Variables
+
 app = Flask(__name__)
 ACCESS_TOKEN = os.environ['ACCESS_TOKEN']
 VERIFY_TOKEN = os.environ['VERIFY_TOKEN']
@@ -35,8 +40,9 @@ def receive_message():
                         if msg.lower() == 'hi':
                             response_sent_text = "Yo!"
                         elif msg.lower() == "weather":
-                            # TODO expand the get_weather function to get the location of the writer
                             response_sent_text = get_weather()
+                        elif msg.lower() == "help" or msg.lower() == "menu":
+                            response_sent_nontext = commands;    
                         else:
                             response_sent_text = get_message()
                         send_message(recipient_id, response_sent_text)
