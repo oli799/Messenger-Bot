@@ -8,7 +8,7 @@ from flask import Flask, request
 from pymessenger.bot import Bot
 
 #Variables
-commands = "You can use the following commands in this bot:\n\n1. Hi - The bot greet you \n2. Weather - the bot displays the current weather\n3. help/menu - The bot displays the commands"
+commands = "You can use the following commands in this bot:\n\n1. Hi - The bot greet you \n2. Weather - the bot displays the current weather\n3. help/menu - The bot displays the commands\n4. Quote- the bot display a random quote"
 
 #Variables
 
@@ -48,6 +48,7 @@ def receive_message():
                             response_sent_text = get_quote()
                         else:
                             response_sent_text = get_message()
+                        #TODO: create a funtion for sending news to users
                         send_message(recipient_id, response_sent_text)
                     # if user sends us a GIF, photo,video, or any other non-text item
                     if message['message'].get('attachments'):
@@ -81,6 +82,7 @@ def send_message(recipient_id, response):
 
 
 def get_weather():
+    #FIXME: refactor get_weather funtion to get a real poition or get the weather by inputed city
     # get the waether data using weather-api
     g = geocoder.ip('me')
     lat = g.latlng[0]
