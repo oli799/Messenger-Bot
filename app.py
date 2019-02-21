@@ -80,10 +80,10 @@ def get_weather():
     owm = pyowm.OWM('1a4b6b94818486e559a01ec1fb90bfba')
     observation = owm.weather_at_coords(lat, lng)
     w = observation.get_weather()
-    temp = w.get_temerature('celsius')
+    temp = w.get_temperature('celsius')
 
-    weather = "The temperature in you location (" + \
-        g.city + ") is :" + str(temp['temp'] + "Celsius")
+    weather = ("The temperature in you location (" +
+               str(g.city) + ") is : " + str(temp['temp']) + " °C")
 
     return weather
 
