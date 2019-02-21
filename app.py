@@ -42,7 +42,7 @@ def receive_message():
                         elif msg.lower() == "weather":
                             response_sent_text = get_weather()
                         elif msg.lower() == "help" or msg.lower() == "menu":
-                            response_sent_nontext = commands;    
+                            response_sent_text = commands;    
                         else:
                             response_sent_text = get_message()
                         send_message(recipient_id, response_sent_text)
