@@ -2,15 +2,15 @@
 import random
 import os
 import pyowm
-import geocoder
+#import geocoder
 import wikiquotes
 from flask import Flask, request
 from pymessenger.bot import Bot
 
-#Variables
+# Variables
 commands = "You can use the following commands in this bot:\n\n1. Hi - The bot greet you \n2. Weather - the bot displays the current weather\n3. help/menu - The bot displays the commands\n4. Quote- the bot display a random quote"
 
-#Variables
+# Variables
 
 app = Flask(__name__)
 ACCESS_TOKEN = os.environ['ACCESS_TOKEN']
@@ -37,18 +37,10 @@ def receive_message():
                     recipient_id = message['sender']['id']
                     if message['message'].get('text'):
                         msg = message['message'].get('text')
+
                         response_sent_text = ""
-                        if msg.lower() == 'hi':
-                            response_sent_text = "Yo!"
-                        elif msg.lower() == "weather":
-                            response_sent_text = get_weather()
-                        elif msg.lower() == "help" or msg.lower() == "menu":
-                            response_sent_text = commands
-                        elif msg.lower() == "quote":
-                            response_sent_text = get_quote()
-                        else:
-                            response_sent_text = get_message()
-                        #TODO: create a funtion for sending news to users
+                        response_sent_text = choose_response_text(msg)
+
                         send_message(recipient_id, response_sent_text)
                     # if user sends us a GIF, photo,video, or any other non-text item
                     if message['message'].get('attachments'):
@@ -64,8 +56,9 @@ def verify_fb_token(token_sent):
         return request.args.get("hub.challenge")
     return 'Invalid verification token'
 
-
 # chooses a random message to send to the user
+
+
 def get_message():
     sample_responses = ["Hey!", "Hello!",
                         "How are you?"]
@@ -80,16 +73,18 @@ def send_message(recipient_id, response):
     bot.send_text_message(recipient_id, response)
     return "success"
 
+# get the water data from OWM api
 
-def get_weather():
-    #FIXME: refactor get_weather funtion to get a real poition or get the weather by inputed city
+
+def get_weather(city):
+    # FIXME: refactor get_weather funtion to get a real poition or get the weather by inputed city
     # get the waether data using weather-api
-    g = geocoder.ip('me')
-    lat = g.latlng[0]
-    lng = g.latlng[1]
+    #g = geocoder.ip('me')
+    #lat = g.latlng[0]
+    #lng = g.latlng[1]
 
     owm = pyowm.OWM('1a4b6b94818486e559a01ec1fb90bfba')
-    observation = owm.weather_at_coords(lat, lng)
+    observation = owm.weather_at_place(city)
     w = observation.get_weather()
     temp = w.get_temperature('celsius')
 
@@ -98,9 +93,31 @@ def get_weather():
 
     return weather
 
+
 def get_quote():
     quote = wikiquotes.random_quote("Aristotle", "english")
     return quote
+
+
+def choose_response_text(msg):
+
+    # TODO: create a funtion for sending news to users
+    response_text = ""
+
+    if(len(str(msg).split(" ")) == 2):
+        key, city = msg.split(" ")
+        if key.lower() == "weather":
+            response_text = get_weather(city)
+    elif msg.lower() == 'hi':
+        response_text = "Yo!"
+    elif msg.lower() == "help" or msg.lower() == "menu":
+        response_text = commands
+    elif msg.lower() == "quote":
+        response_text = get_quote()
+    else:
+        response_text = get_message()
+
+    return response_text
 
 
 if __name__ == "__main__":
