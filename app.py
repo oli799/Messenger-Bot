@@ -89,7 +89,7 @@ def get_weather(city):
     temp = w.get_temperature('celsius')
 
     weather = ("The temperature in you location (" +
-               str(g.city) + ") is : " + str(temp['temp']) + " °C")
+               str(city) + ") is : " + str(temp['temp']) + " °C")
 
     return weather
 
