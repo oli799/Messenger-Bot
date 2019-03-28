@@ -2,7 +2,6 @@
 import random
 import os
 import pyowm
-#import geocoder
 import wikiquotes
 from flask import Flask, request
 from pymessenger.bot import Bot
@@ -77,18 +76,13 @@ def send_message(recipient_id, response):
 
 
 def get_weather(city):
-    # FIXME: refactor get_weather funtion to get a real poition or get the weather by inputed city
-    # get the waether data using weather-api
-    #g = geocoder.ip('me')
-    #lat = g.latlng[0]
-    #lng = g.latlng[1]
-
+    # TODO: handling wrong city input from the user
     owm = pyowm.OWM('1a4b6b94818486e559a01ec1fb90bfba')
     observation = owm.weather_at_place(city)
     w = observation.get_weather()
     temp = w.get_temperature('celsius')
 
-    weather = ("The temperature in you location (" +
+    weather = ("The temperature in (" +
                str(city) + ") is : " + str(temp['temp']) + " °C")
 
     return weather
@@ -106,8 +100,11 @@ def choose_response_text(msg):
 
     if(len(str(msg).split(" ")) == 2):
         key, city = msg.split(" ")
-        if key.lower() == "weather":
+    if key.lower() == "weather":
+        try:
             response_text = get_weather(city)
+        except:
+            response_text = "This city is not available."
     elif msg.lower() == 'hi':
         response_text = "Yo!"
     elif msg.lower() == "help" or msg.lower() == "menu":
