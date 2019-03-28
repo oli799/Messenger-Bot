@@ -77,15 +77,17 @@ def send_message(recipient_id, response):
 
 def get_weather(city):
     # TODO: handling wrong city input from the user
-    owm = pyowm.OWM('1a4b6b94818486e559a01ec1fb90bfba')
-    observation = owm.weather_at_place(city)
-    w = observation.get_weather()
-    temp = w.get_temperature('celsius')
+    try:
+        owm = pyowm.OWM('1a4b6b94818486e559a01ec1fb90bfba')
+        observation = owm.weather_at_place(city)
+        w = observation.get_weather()
+        temp = w.get_temperature('celsius')
 
-    weather = ("The temperature in (" +
-               str(city) + ") is : " + str(temp['temp']) + " °C")
-
-    return weather
+        weather = ("The temperature in (" +
+                   str(city) + ") is : " + str(temp['temp']) + " °C")
+        return weather
+    except:
+        return "This city is not available!"
 
 
 def get_quote():
@@ -101,10 +103,7 @@ def choose_response_text(msg):
     if(len(str(msg).split(" ")) == 2):
         key, city = msg.split(" ")
     if key.lower() == "weather":
-        try:
-            response_text = get_weather(city)
-        except:
-            response_text = "This city is not available."
+        response_text = get_weather(city)
     elif msg.lower() == 'hi':
         response_text = "Yo!"
     elif msg.lower() == "help" or msg.lower() == "menu":
